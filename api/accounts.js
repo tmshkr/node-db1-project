@@ -1,9 +1,9 @@
 const router = require("express").Router();
 const db = require("../data/dbConfig.js");
 
-router.get("/", (req, res) => {
+router.get("/", (req, res, next) => {
   db.select("*")
-    .from("accounts")
+    .from("account")
     .then((accounts) => {
       accounts.count > 0
         ? res.json(accounts)
@@ -11,7 +11,7 @@ router.get("/", (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send("There was an error getting the accounts");
+      next({ code: 500, message: "There was an error getting the accounts" });
     });
 });
 
