@@ -60,4 +60,15 @@ router.put("/:id", (req, res) => {
     });
 });
 
+router.delete("/:id", (req, res) => {
+  db("accounts")
+    .where("id", req.params.id)
+    .del()
+    .then(() => res.status(204).send())
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("There was an error deleting the account");
+    });
+});
+
 module.exports = router;
