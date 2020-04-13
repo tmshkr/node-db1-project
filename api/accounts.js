@@ -5,7 +5,7 @@ router.get("/", (req, res, next) => {
   db.select("*")
     .from("accounts")
     .then((accounts) => {
-      accounts.count > 0
+      accounts.length > 0
         ? res.json(accounts)
         : res.status(404).send("no accounts yet");
     })
@@ -19,13 +19,28 @@ router.get("/:id", (req, res) => {
   db("accounts")
     .where("id", req.params.id)
     .then((accounts) => {
-      accounts.count > 0
+      accounts.length > 0
         ? res.json(accounts)
         : res.status(404).send("account not found");
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send("There was an error retrieving the account");
+      next({ code: 500, message: "There was an error retrieving the account" });
+    });
+});
+
+router.post("/", (req, res, next) => {
+  const { name, budget } = req.body;
+  db("accounts")
+    .insert({ name, budget })
+    .then((ids) => {
+      const id = ids[0];
+      return db("accounts").where({ id });
+    })
+    .then((account) => res.status(201).json(account))
+    .catch((err) => {
+      console.error(err);
+      next({ code: 500, message: "There was an error creating the account" });
     });
 });
 
