@@ -15,7 +15,7 @@ router.get("/", (req, res, next) => {
     });
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", (req, res, next) => {
   db("accounts")
     .where("id", req.params.id)
     .then((accounts) => {
@@ -44,7 +44,7 @@ router.post("/", (req, res, next) => {
     });
 });
 
-router.put("/:id", (req, res) => {
+router.put("/:id", (req, res, next) => {
   const { name, budget } = req.body;
   db("accounts")
     .where("id", req.params.id)
@@ -56,18 +56,18 @@ router.put("/:id", (req, res) => {
     })
     .catch((err) => {
       console.error(err);
-      res.status(500).send("There was an error updating the account");
+      next({ code: 500, message: "There was an error updating the account" });
     });
 });
 
-router.delete("/:id", (req, res) => {
+router.delete("/:id", (req, res, next) => {
   db("accounts")
     .where("id", req.params.id)
     .del()
     .then(() => res.status(204).send())
     .catch((err) => {
       console.error(err);
-      res.status(500).send("There was an error deleting the account");
+      next({ code: 500, message: "There was an error deleting the account" });
     });
 });
 
