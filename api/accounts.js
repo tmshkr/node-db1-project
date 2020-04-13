@@ -2,8 +2,12 @@ const router = require("express").Router();
 const db = require("../data/dbConfig.js");
 
 router.get("/", (req, res, next) => {
+  console.log(req.query);
+  const { limit, sortby, sortdir } = req.query;
   db.select("*")
     .from("accounts")
+    .orderBy(sortby || "id", sortdir || "ASC")
+    .limit(limit)
     .then((accounts) => {
       accounts.length > 0
         ? res.json(accounts)
