@@ -44,4 +44,20 @@ router.post("/", (req, res, next) => {
     });
 });
 
+router.put("/:id", (req, res) => {
+  const { name, budget } = req.body;
+  db("accounts")
+    .where("id", req.params.id)
+    .update({ name, budget })
+    .then((updates) => {
+      updates > 0
+        ? res.json(updates)
+        : res.status(404).send("account not found");
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("There was an error updating the account");
+    });
+});
+
 module.exports = router;
